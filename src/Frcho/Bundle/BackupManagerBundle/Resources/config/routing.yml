@@ -1,0 +1,3 @@
+frcho_backup_manager_homepage:
+    path:     /
+    defaults: { _controller: FrchoBackupManagerBundle:Default:index }

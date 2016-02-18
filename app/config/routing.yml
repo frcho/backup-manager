@@ -1,0 +1,4 @@
+frcho_backup_manager:
+    resource: "@FrchoBackupManagerBundle/Resources/config/routing.yml"
+    prefix:   /
+
