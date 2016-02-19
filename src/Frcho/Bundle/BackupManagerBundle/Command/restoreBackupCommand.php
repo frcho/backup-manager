@@ -6,13 +6,26 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\StringInput;
 use BackupManager\Databases\DatabaseProvider;
 use BackupManager\Procedures\RestoreProcedure;
 use BackupManager\Filesystems\FilesystemProvider;
 use BackupManager\Filesystems\Destination;
+use Symfony\Component\Console\Style\OutputStyle;
 
-class restoreBackupCommand extends ContainerAwareCommand {
+class restoreBackupCommand extends \Symfony\Component\Console\Command\Command {
+//    /**
+//     * The input interface implementation.
+//     *
+//     * @var \Symfony\Component\Console\Input\InputInterface
+//     */
+//    protected $input;
+//
+//    /**
+//     * The output interface implementation.
+//     *
+//     * @var Symfony\Component\Console\Style\OutputStyle
+//     */
+//    protected $output;
 
     /**
      * The required arguments.
@@ -21,10 +34,44 @@ class restoreBackupCommand extends ContainerAwareCommand {
      */
     private $required = ['source', 'sourcePath', 'database', 'compression'];
 
+    /**
+     * The missing arguments.
+     *
+     * @var array
+     */
+    private $missingArguments;
+
+    /**
+     * @var \BackupManager\Filesystems\FilesystemProvider
+     */
+    private $filesystems;
+
+    /**
+     * The default verbosity of output commands.
+     *
+     * @var int
+     */
+    protected $verbosity = OutputInterface::VERBOSITY_NORMAL;
+    
+
+
+//    public function __construct($filesystems)
+//    {
+//        $this->filesystems = $filesystems;
+//
+////        parent::__construct();
+//    }
+
+
     protected function configure() {
         $this
                 ->setName('backup:manager:restore')
-                ->setDescription('This command restore a backup in the database selected')->getOptions()
+                ->setDescription('This command restore a backup in the database selected')
+                ->setDefinition(
+//                    new InputOption('source', null, InputOption::VALUE_OPTIONAL, 'Source configuration name', null),
+                        $this->getOptions()
+                )
+//               
 
         ;
     }
@@ -33,18 +80,18 @@ class restoreBackupCommand extends ContainerAwareCommand {
 
 
         if ($this->isMissingArguments($input)) {
-            $this->displayMissingArguments();
+            $this->displayMissingArguments($output);
             $this->promptForMissingArgumentValues();
             $this->validateArguments();
         }
 
-        $this->info('Downloading and importing backup...');
+        $this->info($output, 'Downloading and importing backup...');
         $this->restore->run(
                 $this->option('source'), $this->option('sourcePath'), $this->option('database'), $this->option('compression')
         );
-        $this->line('');
+        $this->line($output, '');
         $root = $this->filesystems->getConfig($this->option('source'), 'root');
-        $this->info(sprintf('Successfully restored <comment>%s</comment> from <comment>%s</comment> to database <comment>%s</comment>.', $root . $this->option('sourcePath'), $this->option('source'), $this->option('database')
+        $this->info($output, sprintf('Successfully restored <comment>%s</comment> from <comment>%s</comment> to database <comment>%s</comment>.', $root . $this->option('sourcePath'), $this->option('source'), $this->option('database')
         ));
 
 
@@ -58,11 +105,9 @@ class restoreBackupCommand extends ContainerAwareCommand {
      * @return bool
      */
     private function isMissingArguments($input) {
+
         foreach ($this->required as $argument) {
-            
-               \Symfony\Component\VarDumper\VarDumper::dump($argument);
-            die();
-            if (!$input->getArgument($argument)) {
+            if (!$this->option($input, $argument)) {
                 $this->missingArguments[] = $argument;
             }
         }
@@ -72,11 +117,11 @@ class restoreBackupCommand extends ContainerAwareCommand {
     /**
      * @return void
      */
-    private function displayMissingArguments() {
+    private function displayMissingArguments(OutputInterface $output) {
         $formatted = implode(', ', $this->missingArguments);
-        $this->info("These arguments haven't been filled yet: <comment>{$formatted}</comment>");
-        $this->info('The following questions will fill these in for you.');
-        $this->line('');
+        $this->info($output, "These arguments haven't been filled yet: <comment>{$formatted}</comment>");
+        $this->info($output, 'The following questions will fill these in for you.');
+        $this->line($output, '');
     }
 
     /**
@@ -196,17 +241,93 @@ class restoreBackupCommand extends ContainerAwareCommand {
     }
 
     /**
+     * Write a string as standard output.
+     *
+     * @param  string  $string
+     * @param  string  $style
+     * @param  null|int|string  $verbosity
+     * @return void
+     */
+    public function line(OutputInterface $output, $string, $style = null, $verbosity = null) {
+        $styled = $style ? "<$style>$string</$style>" : $string;
+        $output->writeln($styled, $this->parseVerbosity($verbosity));
+    }
+
+    /**
+     * Get the value of a command argument.
+     *
+     * @param  string  $key
+     * @return string|array
+     */
+    public function argument($key = null) {
+        if (is_null($key)) {
+            return $this->input->getArguments();
+        }
+        return $this->input->getArgument($key);
+    }
+
+    /**
+     * Get the value of a command option.
+     *
+     * @param  string  $key
+     * @return string|array
+     */
+    public function option($input, $key = null) {
+        if (is_null($key)) {
+            return $input->getOptions();
+        }
+        return $input->getOption($key);
+    }
+
+    /**
+     * Get the verbosity level in terms of Symfony's OutputInterface level.
+     *
+     * @param  string|int  $level
+     * @return int
+     */
+    protected function parseVerbosity($level = null) {
+        if (isset($this->verbosityMap[$level])) {
+            $level = $this->verbosityMap[$level];
+        } elseif (!is_int($level)) {
+            $level = $this->verbosity;
+        }
+        return $level;
+    }
+
+    /**
+     * Set the verbosity level.
+     *
+     * @param string|int $level
+     * @return void
+     */
+    protected function setVerbosity($level) {
+        $this->verbosity = $this->parseVerbosity($level);
+    }
+
+    /**
      * Get the console command options.
      *
      * @return array
      */
     protected function getOptions() {
         return [
-            ['source', null, InputOption::VALUE_OPTIONAL, 'Source configuration name', null],
-            ['sourcePath', null, InputOption::VALUE_OPTIONAL, 'Source path from service', null],
-            ['database', null, InputOption::VALUE_OPTIONAL, 'Database configuration name', null],
-            ['compression', null, InputOption::VALUE_OPTIONAL, 'Compression type', null],
-        ];
+            new InputOption('source', null, InputOption::VALUE_OPTIONAL, 'Source configuration name', null),
+            new InputOption('sourcePath', null, InputOption::VALUE_OPTIONAL, 'Source path from service', null),
+            new InputOption('database', null, InputOption::VALUE_OPTIONAL, 'Database configuration name', null),
+            new InputOption('compression', null, InputOption::VALUE_OPTIONAL, 'Compression type', null),
+                ]
+        ;
+    }
+
+    /**
+     * Write a string as information output.
+     *
+     * @param  string  $string
+     * @param  null|int|string  $verbosity
+     * @return void
+     */
+    public function info(OutputInterface $output, $string, $verbosity = null) {
+        $this->line($output, $string, 'info', $verbosity);
     }
 
     /**
