@@ -15,7 +15,7 @@ Open a command console, enter your project directory and execute the
 following command to download the latest stable version of this bundle:
 
 ```bash
-$ composer require frcho/backup-manager "1.0.0"
+$ composer require frcho/backup-manager "dev-master"
 ```
 
 This command requires you to have Composer installed globally, as explained
