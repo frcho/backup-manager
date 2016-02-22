@@ -81,7 +81,7 @@ frcho_backup_manager:
             port: "%database_port%"
             user: "%database_user%"
             pass: "%database_password%"
-            database: cargatest
+            database: "%database_name%"
     storage:
         local:
             type: Local
