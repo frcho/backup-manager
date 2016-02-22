@@ -1,7 +1,15 @@
 {
     "name": "frcho/backup-manager",
-    "license": "proprietary",
-    "type": "project",
+    "description": "A simple database backup manager for Symfony2 with support for S3, Rackspace, Dropbox, FTP, SFTP.",
+    "keywords": ["database", "backup", "symfony", "S3", "Rackspace", "Dropbox", "FTP", "SFTP"],
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Luis Fernando Granados",
+            "email": "luisfer1g@gmail.com"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "": "src/"
@@ -16,11 +24,15 @@
         "symfony/symfony": "2.8.*",
         "doctrine/orm": "^2.4.8",
         "doctrine/doctrine-bundle": "~1.4",
-        "symfony/swiftmailer-bundle": "~2.3",
-        "symfony/monolog-bundle": "~2.4",
         "sensio/distribution-bundle": "~5.0",
         "sensio/framework-extra-bundle": "^3.0.2",
+        "symfony/monolog-bundle": "~2.4",
+        "symfony/swiftmailer-bundle": "~2.3",
         "incenteev/composer-parameter-handler": "~2.0",
+        "symfony/dependency-injection": "~2.3",
+        "symfony/config": "~2.3",
+        "symfony/filesystem": "~2.3",
+        "symfony/class-loader": "~2.2",
         "backup-manager/backup-manager": "^1.0",
         "league/flysystem-aws-s3-v3": "^1.0",
         "league/flysystem-dropbox": "^1.0",
@@ -31,7 +43,6 @@
         "sensio/generator-bundle": "~3.0",
         "symfony/phpunit-bridge": "~2.7"
     },
-    "minimum-stability": "dev",
     "scripts": {
         "post-install-cmd": [
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
@@ -51,10 +62,7 @@
         ]
     },
     "config": {
-        "bin-dir": "bin",
-        "platform": {
-            "php": "5.5.9"
-        }
+        "bin-dir": "bin"
     },
     "extra": {
         "symfony-app-dir": "app",
