@@ -13,7 +13,7 @@
     "autoload": {
         "psr-4": {
             "Frcho\\Bundle\\BackupManagerBundle\\": ""
-        },
+        }
     },
     "require": {
         "php": ">=5.5.9",
