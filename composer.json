@@ -10,13 +10,6 @@
             "email": "luisfer1g@gmail.com"
         }
     ],
-     "keywords": [
-        "backup",
-        "task",
-        "cron",
-        "jobs",
-        "symfony2"
-    ],
     "autoload": {
         "psr-4": {
             "Frcho\\Bundle\\BackupManagerBundle\\": ""
