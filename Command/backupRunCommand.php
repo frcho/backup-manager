@@ -28,8 +28,8 @@ class backupRunCommand extends ContainerAwareCommand {
         $container = $this->getContainer();
 
         $date = new \DateTime();
-        $result = $date->format('Y-m-d H:i:s');
-        $fileName = $container->getParameter('database_name') . '-' . $result;
+        $datetime = $date->format('Y-m-d H:i:s');
+        $fileName = $container->getParameter('database_name') . '-' . $datetime;
 
         $database = $input->getArgument('database');
 
