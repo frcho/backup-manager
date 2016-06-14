@@ -28,7 +28,7 @@ class backupRunCommand extends ContainerAwareCommand {
         $container = $this->getContainer();
 
         $date = new \DateTime();
-        $datetime = $date->format('Y-m-d H:i:s');
+        $datetime = $date->format('Y-m-d_H:i:s');
         $fileName = $container->getParameter('database_name') . '-' . $datetime;
 
         $database = $input->getArgument('database');
@@ -57,13 +57,15 @@ class backupRunCommand extends ContainerAwareCommand {
         if (!empty($compression)) {
             $compression = $input->getArgument('compression');
         } else {
-            $compression = 'null';
+            $compression = 'gzip';
         }
 
         $container->get('backup_manager')->makeBackup()->run($database, array(
             new Destination($destination, 'backups/' . $destinationFileName . '.sql'),
-//            new Destination('s3', 'backups/test.sql')
                 ), $compression);
+//        $container->get('backup_manager')->makeBackup()->run($database, array(
+//            new Destination('s3', $destinationFileName . '.sql')
+//                ), $compression);
     }
 
 }
