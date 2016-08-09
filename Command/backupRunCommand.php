@@ -61,7 +61,11 @@ class backupRunCommand extends ContainerAwareCommand {
         if (!empty($compression)) {
             $compression = $input->getArgument('compression');
         } else {
-            $compression = 'gzip';
+            if (function_exists("gzopen") || function_exists("gzopen64")) {
+                $compression = 'gzip';
+            } else {
+                $compression = 'null';
+            }
         }
 
         $container->get('backup_manager')->makeBackup()->run($database, array(
@@ -69,7 +73,7 @@ class backupRunCommand extends ContainerAwareCommand {
                 ), $compression);
 
         $this->uploadS3($database, $destinationFileName, $compression);
-        
+
         $this->removeLocalFiles();
     }
 
