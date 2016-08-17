@@ -18,9 +18,9 @@
     "require": {
         "php": ">=5.5.9",
         "symfony/symfony": "~2.8|^3.0",
-         "symfony/dependency-injection": "~2.3",
+        "symfony/dependency-injection": "~2.3",
         "symfony/config": "~2.3",
-        "symfony/filesystem": "~2.3",
+        "symfony/filesystem": "~3.0",
         "symfony/class-loader": "~2.2",
         "backup-manager/backup-manager": "^1.0",
         "league/flysystem-aws-s3-v3": "^1.0",
