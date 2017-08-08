@@ -83,7 +83,7 @@ class backupRunCommand extends ContainerAwareCommand {
         $yaml = new Parser();
         $content = $yaml->parse(file_get_contents($container->get('kernel')->getRootDir() . '/config/config.yml'));
 
-        if ($content["frcho_backup_manager"]) {
+        if ($content["frcho_backup_manager"] && isset($content["frcho_backup_manager"]["storage"]["s3"])) {
             $params = $content["frcho_backup_manager"]["storage"]["s3"];
             $i = 0;
             $stdS3 = true;
