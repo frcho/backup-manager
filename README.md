@@ -1,9 +1,11 @@
 FrchoBackupManagerBundle
 ===================
 
-A simple database backup manager for Symfony2 with support for S3, Rackspace, Dropbox, FTP, SFTP.
+A simple database backup manager for Symfony 4 with support for S3, Rackspace, Dropbox, FTP, SFTP.
 
 This package pulls in the framework agnostic [Backup Manager](https://github.com/backup-manager/backup-manager) and provides seamless integration with **Symfony**. 
+
+for previous version of symfony use tag 1.0.1
 
 Installation
 ============
