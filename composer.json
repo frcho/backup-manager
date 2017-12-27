@@ -16,8 +16,7 @@
         }
     },
     "require": {
-        "php": ">=5.5.9",
-        "symfony/symfony": "^3.0",
+        "php": "^7.0",
         "symfony/dependency-injection": "~3.0",
         "symfony/config": "~3.0",
         "symfony/filesystem": "~3.0",
@@ -29,8 +28,7 @@
         "league/flysystem-sftp": "^1.0"
     },
     "require-dev": {
-        "sensio/generator-bundle": "~3.0",
-        "symfony/phpunit-bridge": "~2.7"
+        "symfony/phpunit-bridge": "^3.0"
     },
      "extra": {
         "branch-alias": {
