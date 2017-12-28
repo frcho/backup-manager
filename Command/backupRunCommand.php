@@ -3,15 +3,12 @@
 namespace Frcho\Bundle\BackupManagerBundle\Command;
 
 use Symfony\Component\Yaml\Parser;
-use Symfony\Component\Config\FileLocator;
 use BackupManager\Filesystems\Destination;
-use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\HttpKernel\Kernel;
 
 class backupRunCommand extends ContainerAwareCommand {
 
@@ -81,7 +78,13 @@ class backupRunCommand extends ContainerAwareCommand {
         $container = $this->getContainer();
 
         $yaml = new Parser();
-        $content = $yaml->parse(file_get_contents($container->get('kernel')->getRootDir() . '/config/config.yml'));
+
+        if ($this->verifyVersion()) {
+            $content = $yaml->parse(file_get_contents($container->get('kernel')->getRootDir() . '/config/config.yml'));
+        } else {
+            $confDir = $container->get('kernel')->getProjectDir() . '/config';
+            $content = $yaml->parse(file_get_contents($confDir . '/packages/frcho_backup_manager.yaml'));
+        }
 
         if ($content["frcho_backup_manager"] && isset($content["frcho_backup_manager"]["storage"]["s3"])) {
             $params = $content["frcho_backup_manager"]["storage"]["s3"];
@@ -112,7 +115,10 @@ class backupRunCommand extends ContainerAwareCommand {
     protected function removeLocalFiles() {
         $container = $this->getContainer();
 
-        $path = $container->getParameter('kernel.root_dir') . '/data/backups/';
+        $path = $container->getParameter('kernel.project_dir') . '/config/data/backups/';
+        if ($this->verifyVersion()) {
+            $path = $container->getParameter('kernel.root_dir') . '/data/backups/';
+        }
 
         $handle = opendir($path);
         if ($handle !== false) {
@@ -127,6 +133,24 @@ class backupRunCommand extends ContainerAwareCommand {
 
             closedir($handle);
         }
+    }
+
+    /**
+     * Function for verify if version is 4 o minor
+     * @return boolean
+     */
+    public function verifyVersion() {
+        $version = "4.0.0";
+        $symfonyVersion = Kernel::VERSION;
+
+        if ($symfonyVersion == '3.4.2') {
+            return false;
+        }
+        if (version_compare($symfonyVersion, $version) == '-1') {
+            return true;
+        }
+
+        return false;
     }
 
 }
