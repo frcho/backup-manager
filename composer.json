@@ -17,20 +17,20 @@
     },
     "require": {
         "php": "^7.0",
-        "symfony/dependency-injection": "~3.0",
-        "symfony/config": "~3.0",
-        "symfony/filesystem": "~3.0",
-        "symfony/class-loader": "~3.0",
+        "symfony/dependency-injection": "^3.4 || ^4.0",
+        "symfony/config": "^3.4 || ^4.0",
+        "symfony/filesystem": "^3.4 || ^4.0",
+        "symfony/class-loader": "^3.4 || ^4.0",
         "backup-manager/backup-manager": "^1.0",
         "league/flysystem-aws-s3-v3": "^1.0",
         "league/flysystem-dropbox": "^1.0",
         "league/flysystem-rackspace": "^1.0",
         "league/flysystem-sftp": "^1.0",
-        "symfony/http-kernel": "^3.4",
-        "symfony/console": "^3.4"
+        "symfony/http-kernel": "^3.4 || ^4.0",
+        "symfony/console": "^3.4 || ^4.0"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "^3.0"
+        "symfony/phpunit-bridge": "^3.4 || ^4.0"
     },
      "extra": {
         "branch-alias": {
