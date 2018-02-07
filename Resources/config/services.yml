@@ -81,3 +81,8 @@ services:
     backup_manager:
         class:  BackupManager\Manager
         arguments: ["@backup_manager.filesystems", "@backup_manager.databases", "@backup_manager.compressors"]
+        public: true
+        
+    Frcho\Bundle\BackupManagerBundle\Command\backupRunCommand:
+        tags:
+            - { name: 'console.command', command: 'backup:manager:backup' }   
