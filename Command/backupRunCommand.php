@@ -2,15 +2,15 @@
 
 namespace Frcho\Bundle\BackupManagerBundle\Command;
 
-use Symfony\Component\Yaml\Parser;
-use BackupManager\Filesystems\Destination;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Command\Command;
+use BackupManager\Filesystems\Destination;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\Yaml\Parser;
 
-class backupRunCommand extends ContainerAwareCommand {
+class backupRunCommand extends Command {
 
     protected function configure() {
         $this
@@ -26,7 +26,7 @@ class backupRunCommand extends ContainerAwareCommand {
     protected function execute(InputInterface $input, OutputInterface $output) {
 
 
-        $container = $this->getContainer();
+        $container = $this->getApplication()->getKernel()->getContainer();
 
         $date = new \DateTime();
         $datetime = $date->format('Y-m-d_H:i:s');
