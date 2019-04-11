@@ -75,7 +75,7 @@ class backupRunCommand extends Command {
     }
 
     protected function uploadS3($database, $destinationFileName, $compression) {
-        $container = $this->getContainer();
+        $container = $this->getApplication()->getKernel()->getContainer();
 
         $yaml = new Parser();
 
@@ -113,7 +113,7 @@ class backupRunCommand extends Command {
     }
 
     protected function removeLocalFiles() {
-        $container = $this->getContainer();
+        $container = $this->getApplication()->getKernel()->getContainer();
 
         $path = $container->getParameter('kernel.project_dir') . '/config/data/backups/';
         if ($this->verifyVersion()) {
